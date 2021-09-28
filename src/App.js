@@ -71,24 +71,14 @@ export default class App extends React.PureComponent {
         source: 'data-json', // reference the data source
         layout: {},
         paint: {
-          'fill-color': `#${params.fill}`,
-          'fill-opacity': parseFloat(params['fill-opacity']),
-        },
-      });
-      
-      map.addLayer({
-        id: 'outline',
-        type: 'line',
-        source: 'data-json',
-        layout: {},
-        paint: {
-          'line-color': `#${params.fill}`,
-          'line-width': 2,
+          // needs to assign fill color based on value
+          'fill-color': `#e60000`,
+          'fill-opacity': .5,
         },
       });
     
       const bounds = turf.bbox(json);
-      map.fitBounds(bounds, { padding: 100, duration: 0 });
+      map.fitBounds(bounds, { padding: 0, duration: 0 });
       setTimeout(function(){
         console.log('brb crying');
         postDiv();
