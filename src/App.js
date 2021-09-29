@@ -2,10 +2,34 @@ import React from 'react';
 import './index.css';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import * as turf from '@turf/turf';
-import {interpolateInferno} from 'd3-scale-chromatic';
+import {interpolateYlOrRd} from 'd3-scale-chromatic';
 
 mapboxgl.accessToken =
     'pk.eyJ1IjoiY2FzZXltbWlsZXIiLCJhIjoiY2lpeHY1bnJ1MDAyOHVkbHpucnB1dGRmbyJ9.TzUoCLwyeDoLjh3tkDSD4w';
+
+
+const Legend = () => {
+  let array = []
+  for(let i = .15; i < 1; i += .01){
+    array.push(i);
+  }
+
+  return(
+    <div className="legend-holder">
+      <div className="legend">
+        {array.map(num => (
+          <div key={`item-${num}`} className={`color ${num}`} style={{backgroundColor: interpolateYlOrRd((num - .15)*1.17647058823)}}></div>
+        ))}
+      </div>
+      <div className="labels">
+        <div className="weak">weak to light shaking</div>
+        <div className="moderate">moderate</div>
+        <div className="very-strong">very strong</div>
+        <div className="violent">violent</div>
+      </div>
+    </div>
+  );
+}
 
 export default class App extends React.PureComponent {
   constructor(props) {
@@ -23,13 +47,11 @@ export default class App extends React.PureComponent {
     let loaded = false;
     const map = new mapboxgl.Map({
       container: this.mapContainer.current,
-      style: 'mapbox://styles/caseymmiler/cku4rtys61wpr18mxq5lucizx',
+      style: 'mapbox://styles/caseymmiler/cku5y4h6e321517pqp2dtwj1w',
       center: [lng, lat],
       zoom: zoom
     });
     
-    // svg.selectAll(".secondrow").data(data).enter().append("circle").attr("cx", function(d,i){return 30 + i*60}).attr("cy", 250).attr("r", 19).attr("fill", function(d){return myColor(d) })
-
     const params = window.location.search
     .slice(1)
     .split('&')
@@ -63,11 +85,10 @@ export default class App extends React.PureComponent {
       console.log('ran load')
       json.features = json.features.filter(f => f.properties.PARAMVALUE > 1.5);
       json.features.forEach(f => {
-        console.log(f.properties.PARAMVALUE*.1)
-        f.properties.color = interpolateInferno(f.properties.PARAMVALUE*.1);
-        f.properties.opacity = (f.properties.PARAMVALUE*.1)+.1;
+        // console.log(f.properties.PARAMVALUE*.1, (f.properties.PARAMVALUE*.1 - .15)*1.17647058823)
+        f.properties.color = interpolateYlOrRd((f.properties.PARAMVALUE*.1 - .15)*1.17647058823);
       })
-      
+
       loaded = true;
       map.addSource('data-json', {
         type: 'geojson',
@@ -86,12 +107,10 @@ export default class App extends React.PureComponent {
               type: 'identity',
               property: 'color',
           },
-          'fill-opacity': {
-            type: 'identity',
-            property: 'opacity',
-          }
+          'fill-opacity': 1
         },
-      }, 'settlement-minor-label');
+      }, 'water');
+      // 'settlement-minor-label'
     
       const bounds = turf.bbox(json);
       map.fitBounds(bounds, { padding: 0, duration: 0 });
@@ -107,6 +126,7 @@ export default class App extends React.PureComponent {
     return (
       <div>
         <div ref={this.mapContainer} className="map-container" />
+        <Legend />
       </div>
     );
   }

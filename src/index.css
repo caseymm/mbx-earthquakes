@@ -21,3 +21,46 @@ code {
 #hidden{
   display: none;
 }
+
+.legend-holder{
+  max-width: 800px;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.legend{
+  display: flex;
+  height: 35px;
+  width: 100%;
+  position: relative;
+}
+.legend div{
+  flex-grow: 1;
+}
+
+.labels{
+  display: flex;
+  font-family: 'IBM Plex Mono';
+  position: relative;
+  z-index: 2;
+  margin-top: -28px;
+}
+
+.weak{
+  padding-left: 5px;
+  width: 37%;
+}
+
+.moderate{
+  width: 23%;
+}
+
+.very-strong{
+  width: 26%;
+  color: #fff;
+}
+
+.violent{
+  color: #fff;
+}
