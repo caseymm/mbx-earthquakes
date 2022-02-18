@@ -70,7 +70,9 @@ export default class App extends React.PureComponent {
         uniqueFeats.splice(index, 1); // 2nd parameter means remove one item only
       }
       if(uniqueFeats.length === 1 && uniqueFeats[0] === 'water'){
-        console.log('blank map');
+        return 'blank map';
+      } else {
+        return '';
       }
     }
 
@@ -79,8 +81,9 @@ export default class App extends React.PureComponent {
       // signal done
       const Div = document.createElement('div');
       Div.id = 'hidden';
+      // say whether the map is blank or not
+      Div.innerText = getMapFeatures();
       document.getElementsByClassName('map-container')[0].appendChild(Div);
-      getMapFeatures();
     }
 
     setTimeout(function(){
