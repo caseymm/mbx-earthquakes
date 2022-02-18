@@ -60,12 +60,27 @@ export default class App extends React.PureComponent {
 
     console.log(params);
 
+    const getMapFeatures = () => {
+      // don't want to tweet blank maps of the ocean
+      const mapFeatures = map.queryRenderedFeatures();
+      let featureTypes = mapFeatures.map(f => f.sourceLayer);
+      let uniqueFeats = [...new Set(featureTypes)];
+      const index = uniqueFeats.indexOf(undefined);
+      if (index > -1) {
+        uniqueFeats.splice(index, 1); // 2nd parameter means remove one item only
+      }
+      if(uniqueFeats.length === 1 && uniqueFeats[0] === 'water'){
+        console.log('blank map');
+      }
+    }
+
     const postDiv = () => {
       console.log('loaded')
       // signal done
       const Div = document.createElement('div');
       Div.id = 'hidden';
       document.getElementsByClassName('map-container')[0].appendChild(Div);
+      getMapFeatures();
     }
 
     setTimeout(function(){
@@ -115,7 +130,6 @@ export default class App extends React.PureComponent {
       const bounds = turf.bbox(json);
       map.fitBounds(bounds, { padding: 0, duration: 0 });
       setTimeout(function(){
-        console.log('brb crying');
         postDiv();
       }, 5000)
     });
